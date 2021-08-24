@@ -47,9 +47,10 @@ def api_posts():
 
     elif request.method == 'GET':
         # Get all entries
-        start = request.args.get('start', 0)
-        end = request.args.get('end', 10**10)
-        raw_entries = redis.lrange(ENTRY_KEY, start, end)
+        start = int(request.args.get('start', 0))
+        size = int(request.args.get('length', 10**10))
+
+        raw_entries = redis.lrange(ENTRY_KEY, start, (start + size))
 
         entries = []
         for e in raw_entries:
@@ -57,7 +58,7 @@ def api_posts():
 
         out = {
             "start": start,
-            "end": end,
+            "length": size,
             "size": redis.llen(ENTRY_KEY),
             "items": entries
         }
