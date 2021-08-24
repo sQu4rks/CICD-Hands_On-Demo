@@ -1,0 +1,6 @@
+venv/
+build.sh
+docker-compose.yaml
+dump.rdb
+start.sh
+setup_developer.sh

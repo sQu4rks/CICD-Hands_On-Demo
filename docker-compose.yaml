@@ -1,0 +1,17 @@
+version: "3"  # optional since v1.27.0
+services:
+  web:
+    image: mneiding/cicd-sample:latest
+    ports:
+      - "80:8010"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    links:
+      - redis
+  redis:
+    image: bitnami/redis:latest
+    expose:
+      - "6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
