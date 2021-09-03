@@ -1,4 +1,7 @@
 venv/
-dump.rdb*.pyc
+dump.rdb
+**.pyc
 dump.rdb
 __pycache__/
+.gitignore
+**.DS_Store
