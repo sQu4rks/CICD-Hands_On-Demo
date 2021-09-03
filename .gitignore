@@ -1,2 +1,4 @@
 venv/
+dump.rdb*.pyc
 dump.rdb
+__pycache__/

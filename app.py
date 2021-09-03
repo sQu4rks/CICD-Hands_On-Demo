@@ -6,6 +6,8 @@ import time
 import redis
 from flask import Flask, request, jsonify
 
+from utils import get_entry
+
 # Check that all required environment variables are present
 REQUIRED_VARIABLES = [
     'REDIS_HOST',
@@ -35,15 +37,13 @@ def api_posts():
         for k in keys:
             if k not in data.keys():
                 return {'error': f"Missing key {k}"}, 400
-        
-        entry = {
-            'text': data['text'],
-            'timestamp': time.time(),
-            'author': data['author']
-        }
+
+        # Get an entry        
+        entry = get_entry(data['text'], data['author'])
+
         redis_num = redis.lpush(ENTRY_KEY, json.dumps(entry))
         entry['id'] = redis_num
-        return jsonify(entry)
+        return jsonify(entry), 201
 
     elif request.method == 'GET':
         # Get all entries
