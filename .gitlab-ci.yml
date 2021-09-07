@@ -31,6 +31,7 @@ scenario_test:
     - python3 app.py &
     - echo "scenario tests"
     - cd ../tests/scenario
+    - sleep 5
     - behave
 
 deliver_app:
@@ -48,4 +49,3 @@ deliver_app:
         - docker push "$CI_REGISTRY_IMAGE"
     only:
         - master
-        
