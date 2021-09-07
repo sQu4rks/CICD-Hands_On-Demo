@@ -1,0 +1,51 @@
+stages:
+  - run
+  - test
+  - push
+
+pipeline_ok:
+    stage: run
+    script:
+        - echo "Pipeline running!"
+
+unit_test:
+    stage: test
+    image: python
+    script: 
+        - echo "Unittest"
+        - python3 -m unittest discover tests/unit
+
+scenario_test:
+  variables:
+    REDIS_HOST: "localhost"
+    REDIS_PORT: 6379
+  services:
+    - redis
+  image: python
+  stage: test
+  before_script: 
+    - cd guestbook
+    - python3 -m pip install -r requirements.txt
+  script:
+    - echo "Starting app"
+    - python3 app.py &
+    - echo "scenario tests"
+    - cd ../tests/scenario
+    - behave
+
+deliver_app:
+    stage: push
+    image: docker:latest
+    services:
+      - docker:dind
+    before_script:
+        - cd guestbook
+        - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+        # needs GitLab ENV variables configuration
+    script:
+        - echo "Push to DockerHub"
+        - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+        - docker push "$CI_REGISTRY_IMAGE"
+    only:
+        - master
+        
